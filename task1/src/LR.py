@@ -13,14 +13,20 @@ learning_rate = 0.01
 training_rounds = 200
 
 
-with open('../data/test_vec.pk1', 'rb') as f:
+with open('../data/training_vec.pk1', 'rb') as f:
 	x_vals = pickle.load(f)
 	y_vals = pickle.load(f)
 #iris = 
 x_vals = np.array(x_vals)
 y_vals = np.array(y_vals)
+y_vals = y_vals[0:len(x_vals)]
 
+#print (x_vals)
+print (x_vals.shape)
+#print (y_vals)
+print (y_vals.shape)
 feature_num = x_vals.shape[1]
+print (x_vals[0].shape)
 
 # partition
 train_indices = np.random.choice(len(x_vals), round(len(x_vals)*0.8), replace = False)
@@ -63,7 +69,13 @@ for i in range(training_rounds):
 plt.plot(loss_vec)
 plt.legend(['损失'])
 plt.ylim(0.,1.)
-plt.show()
+#plt.show()
 
+with open('../data/test_vec.pk1', 'rb') as f:
+	X_test = pickle.load(f)
 
-
+ans = sess.run(pred, feed_dict = {x_data: X_test})
+with open('../ans.csv', 'w') as f:
+	for i in range(len(ans)):
+		f.write(str(ans[i][0]))
+		f.write('\n')

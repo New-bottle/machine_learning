@@ -7,15 +7,17 @@ import csv
 
 data_path = '../data/'
 train_ori = data_path + 'training.pk1'
+test_ori  = data_path + 'test.pk1'
 train_vec = data_path + 'training_vec.pk1'
+test_vec  = data_path + 'test_vec.pk1'
 train_label_file = data_path + 'train.csv'
 
-with open(train_ori, 'rb') as f:
-	contents = pickle.load(f)
-	titles = pickle.load(f)
-	ids = pickle.load(f)
-	labels = pickle.load(f)
+vectorizer = CountVectorizer()
+transformer = TfidfTransformer()
 
+negmax = 26349
+negnum = 0
+posnum = 0
 def parse_data(ori_data):
     ans = []
     for obj in ori_data:
@@ -23,17 +25,6 @@ def parse_data(ori_data):
         seg_list = jieba.lcut(line.strip(), cut_all=False)
         ans.append(seg_list)
     return ans
-data_set = parse_data(contents)
-
-corpus = []
-for item in data_set:
-    corpus.append(" ".join(item))
-vectorizer = CountVectorizer()
-transformer = TfidfTransformer()
-tfidf = transformer.fit_transform(vectorizer.fit_transform(corpus)).toarray()
-
-print (tfidf)
-print ('111')
 
 def get_vec(data_set):
     vec_list = []
@@ -42,11 +33,36 @@ def get_vec(data_set):
         vec_list.extend(this_vec)
     return vec_list
 
-vec_list = get_vec(data_set)
+if __name__=='__main__':
+	with open(train_ori, 'rb') as f:
+		contents = pickle.load(f)
+		titles = pickle.load(f)
+		ids = pickle.load(f)
+		labels = pickle.load(f)
 
-with open(data_path + 'test_vec.pk1', 'wb') as f:
-    pickle.dump(vec_list, f)
-    pickle.dump(labels, f)
-#   print (vec_list)
-    f.close()
+	data_set = parse_data(contents)
 
+	corpus = []
+	for item in data_set:
+		corpus.append(" ".join(item))
+	tfidf = transformer.fit_transform(vectorizer.fit_transform(corpus)).toarray()
+	print (tfidf)
+
+	vec_list = get_vec(data_set)
+
+	with open(train_vec, 'wb') as f: 
+		pickle.dump(vec_list, f)
+		pickle.dump(labels, f)
+		f.close()
+############################################################################################
+	with open(test_ori, 'rb') as f:
+		contents = pickle.load(f)
+		titles = pickle.load(f)
+		ids = pickle.load(f)
+	print (len(contents))
+	data_set = parse_data(contents)
+	vec_list = get_vec(data_set)
+
+	with open(test_vec, 'wb') as f:
+		pickle.dump(vec_list, f)
+		f.close()
