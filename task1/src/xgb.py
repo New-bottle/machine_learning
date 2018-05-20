@@ -36,7 +36,7 @@ feature_num = X_train.shape[1]
 # target = 'Disbursed'
 # IDcol = 'ID'
 
-def modelfit(alg, X_train, y_train, useTrainCV=True, cv_folds=5, early_stopping_rounds=50):
+def modelfit(alg, X_train, y_train, useTrainCV=True, cv_folds=5, early_stopping_rounds=5000):
 	if useTrainCV:
 		xgb_param = alg.get_xgb_params()
 		xgtrain = xgb.DMatrix(X_train, label = y_train)
@@ -64,9 +64,8 @@ def modelfit(alg, X_train, y_train, useTrainCV=True, cv_folds=5, early_stopping_
 xgb1 = XGBClassifier(
 	learning_rate = 0.1,
 #	updater = 'grow_gpu',
-	tree_method = 'exact',
 	n_estimators = 1000,
-	max_depth = 5,
+	max_depth = 12,
 	min_child_weight = 1,
 	gamma = 0,
 	subsample = 0.8,
@@ -81,7 +80,7 @@ y_test = xgb1.predict(X_test)
 y_prob = xgb1.predict_proba(X_test)[:,1]
 print (y_test)
 print (y_prob)
-with open('../ans.csv', 'w') as f:
+with open('../data/ans.csv', 'w') as f:
 	for i in range(len(y_prob)):
 		f.write(str(y_prob[i]))
 		f.write('\n')

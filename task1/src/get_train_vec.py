@@ -12,7 +12,7 @@ train_vec = data_path + 'training_vec.pk1'
 test_vec  = data_path + 'test_vec.pk1'
 train_label_file = data_path + 'train.csv'
 
-vectorizer = CountVectorizer(max_features = 2**13)
+vectorizer = CountVectorizer(max_features = 2**15)
 transformer = TfidfTransformer()
 
 negmax = 26349
