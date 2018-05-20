@@ -4,3 +4,7 @@ task1/data/*
 task1/0*
 *.swp
 task1/*
+
+task2/bin/*
+task2/release/*
+*.zip
